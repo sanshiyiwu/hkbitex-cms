@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -15,12 +16,19 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
 import org.java_websocket.WebSocketImpl;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.ContextLoader;
 
 import com.fh.plugin.websocketInstantMsg.ChatServer;
 import com.fh.plugin.websocketOnline.OnlineChatServer;
+import com.fh.service.receiving.currency.CurrencyService;
+import com.fh.service.system.redis.RedisService;
 import com.fh.util.Const;
+import com.fh.util.PageData;
+import com.fh.util.StringUtil;
 import com.fh.util.Tools;
 import com.fh.controller.base.BaseController;
+import com.fh.entity.Page;
 
 /**
  * 创建人：FH 
@@ -28,8 +36,8 @@ import com.fh.controller.base.BaseController;
  * @version
  */
 public class startFilter extends BaseController implements Filter{
-
 	
+	 
 	
 	
 	/**
@@ -38,6 +46,34 @@ public class startFilter extends BaseController implements Filter{
 	public void init(FilterConfig fc) throws ServletException {
 		this.startWebsocketInstantMsg();
 		this.startWebsocketOnline();
+		this.startAddCurrencyList();
+	}
+	/**
+	 *	启动将币种信息加入redis
+	 */
+	public void startAddCurrencyList() {
+		//通过上下文对象获取bean对象
+		ApplicationContext applicationContext = ContextLoader.getCurrentWebApplicationContext();
+		CurrencyService currencyService = (CurrencyService)applicationContext.getBean("currencyService");
+		RedisService redisService = (RedisService)applicationContext.getBean("redisService");
+		Page page = new Page();
+		PageData pd = new PageData();
+		try {
+			if(!(redisService.exists("currencyList") && redisService.exists("totalList"))) {//存在即不取
+				logBefore(logger, "存入缓存");
+				List<PageData> pdList = (List<PageData>)currencyService.list(page);//从数据库取出数据
+				List<PageData>	totalList = currencyService.findBalanceByCurrency(pd);
+				redisService.setList("currencyList", pdList);//加入缓存--币种信息
+				redisService.setList("totalList", totalList);//总和
+				for(int i = 0;i < pdList.size(); i++)  {//加入缓存中key为currency+id 
+					redisService.set(pdList.get(i).get("NAME").toString(), pdList.get(i),StringUtil.REDIS_DB);
+				}
+			}		
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
 	}
 	
 	/**
@@ -56,8 +92,8 @@ public class startFilter extends BaseController implements Filter{
 				}
 			}
 			//System.out.println( "websocket服务器启动,端口" + s.getPort() );
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
+		} catch (UnknownHostException e ) {
+			logger.error(e);
 		}
 	}
 	

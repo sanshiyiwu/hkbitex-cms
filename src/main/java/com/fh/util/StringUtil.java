@@ -24,4 +24,8 @@ public class StringUtil {
 	    }
 	    return returnStr;
 	}
+	/**
+	 * redis数据存储1号
+	 */
+	public final static int REDIS_DB=1;
 }

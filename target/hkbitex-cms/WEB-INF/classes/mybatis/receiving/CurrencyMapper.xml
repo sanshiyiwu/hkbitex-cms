@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CurrencyMapper">
+	
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd">
+		insert into currency a(
+			
+			a.NAME，
+			a.MIN_NUMBER,	
+			a.RATE,	
+			a.CONTRACT_ADDRESS,	
+			a.SORT,	
+			a.TYPE,	
+			a.IS_LEGAL,	
+			a.IS_DISPLAY,	
+			a.GET_ADDRESS,	
+			a.LOGO,	
+			a.MAX_NUMBER,	
+			a.IS_LEVER,	
+			a.IS_MATCH,	
+			a.SHOW_LEGAL,	
+			a.DECIMAL_SCALE,	
+			a.BLACK_LIMT,	
+			a.TOTAL_ACCOUNT,	
+			a.KEY,	
+			a.ALLOW_GAME_EXCHANGE,	
+			a.CREATE_TIME,	
+			a.IS_LOCK,	
+			a.LOCK_DESC	
+		
+		) values (
+		
+			#{NAME}，
+			#{MIN_NUMBER},	
+			#{RATE},	
+			#{CONTRACT_ADDRESS},	
+			#{SORT},	
+			#{TYPE},	
+			#{IS_LEGAL},	
+			#{IS_DISPLAY},	
+			#{GET_ADDRESS},	
+			#{LOGO},	
+			#{MAX_NUMBER},	
+			#{IS_LEVER},	
+			#{IS_MATCH},	
+			#{SHOW_LEGAL},	
+			#{DECIMAL_SCALE},	
+			#{BLACK_LIMT},	
+			#{TOTAL_ACCOUNT},	
+			#{KEY},	
+			#{ALLOW_GAME_EXCHANGE},	
+			#{CREATE_TIME},	
+			#{IS_LOCK},	
+			#{LOCK_DESC}	
+		
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from currency
+		where 
+			ID = #{ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  currency c
+			set 
+			
+				NAME = #{NAME},
+				MIN_NUMBER = #{MIN_NUMBER},
+				RATE = #{RATE},
+				CONTRACT_ADDRESS = #{CONTRACT_ADDRESS},
+				SORT = #{SORT},
+				TYPE = #{TYPE},
+				IS_LEGAL = #{IS_LEGAL},
+				IS_DISPLAY = #{IS_DISPLAY},
+				GET_ADDRESS = #{GET_ADDRESS},
+				LOGO = #{LOGO},
+				MAX_NUMBER = #{MAX_NUMBER},
+				IS_LEVER = #{IS_LEVER},
+				IS_MATCH = #{IS_MATCH},
+				SHOW_LEGAL = #{SHOW_LEGAL},
+				DECIMAL_SCALE = #{DECIMAL_SCALE},
+				BLACK_LIMT = #{BLACK_LIMT},
+				TOTAL_ACCOUNT = #{TOTAL_ACCOUNT},
+				c.KEY = #{KEY},
+				ALLOW_GAME_EXCHANGE = #{ALLOW_GAME_EXCHANGE},
+				CREATE_TIME = #{CREATE_TIME},
+				IS_LOCK = #{IS_LOCK},
+				LOCK_DESC = #{LOCK_DESC}
+			
+			where 
+				ID = #{ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			a.ID,
+			a.NAME,
+			a.MIN_NUMBER,	
+			a.RATE,	
+			a.CONTRACT_ADDRESS,	
+			a.SORT,	
+			a.TYPE,	
+			a.IS_LEGAL,	
+			a.IS_DISPLAY,	
+			a.GET_ADDRESS,	
+			a.LOGO,	
+			a.MAX_NUMBER,	
+			a.IS_LEVER,	
+			a.IS_MATCH,	
+			a.SHOW_LEGAL,	
+			a.DECIMAL_SCALE,	
+			a.BLACK_LIMT,	
+			a.TOTAL_ACCOUNT,	
+			a.KEY,	
+			a.ALLOW_GAME_EXCHANGE,	
+			a.CREATE_TIME,	
+			a.IS_LOCK,	
+			a.LOCK_DESC	
+		
+		from 
+			currency a
+		where 
+			a.ID = #{ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				a.ID,	
+				a.NAME,	
+				a.MIN_NUMBER,	
+				a.RATE,	
+				a.CONTRACT_ADDRESS,	
+				a.SORT,	
+				a.TYPE,	
+				a.IS_LEGAL,	
+				a.IS_DISPLAY,	
+				a.GET_ADDRESS,	
+				a.LOGO,	
+				a.MAX_NUMBER,	
+				a.IS_LEVER,	
+				a.IS_MATCH,	
+				a.SHOW_LEGAL,	
+				a.DECIMAL_SCALE,	
+				a.BLACK_LIMT,	
+				a.TOTAL_ACCOUNT,	
+				a.KEY,	
+				a.ALLOW_GAME_EXCHANGE,	
+				a.CREATE_TIME,	
+				a.IS_LOCK,	
+				a.LOCK_DESC
+					
+			
+		from 
+				currency a 
+	</select>
+	
+	<!-- 列表(全部) -->
+	<select id="listAll" parameterType="pd" resultType="pd">
+		select
+				a.ID,	
+				a.NAME,	
+				a.MIN_NUMBER,	
+				a.RATE,	
+				a.CONTRACT_ADDRESS,	
+				a.SORT,	
+				a.TYPE,	
+				a.IS_LEGAL,	
+				a.IS_DISPLAY,	
+				a.GET_ADDRESS,	
+				a.LOGO,	
+				a.MAX_NUMBER,	
+				a.IS_LEVER,	
+				a.IS_MATCH,	
+				a.SHOW_LEGAL,	
+				a.DECIMAL_SCALE,	
+				a.BLACK_LIMT,	
+				a.TOTAL_ACCOUNT,	
+				a.KEY,	
+				a.ALLOW_GAME_EXCHANGE,	
+				a.CREATE_TIME,	
+				a.IS_LOCK,	
+				a.LOCK_DESC	
+		
+		from 
+				currency a ,users_wallet u
+	</select>
+	
+	<!-- 批量删除 -->
+	<delete id="deleteAll" parameterType="String">
+		delete from currency
+		where 
+			ID in
+		<foreach item="item" index="index" collection="array" open="(" separator="," close=")">
+                 #{item}
+		</foreach>
+	</delete>
+	<!-- 通过币种获取总额 -->
+	
+	<select id="findBalanceByCurrency" parameterType="pd" resultType="pd">
+		select 
+			sum(legal_balance)
+			+sum(lock_legal_balance)
+			+sum(change_balance)
+			+sum(lock_change_balance)
+			+sum(lever_balance)
+			+sum(lock_lever_balance)
+			as 'totat',
+			currency		
+		from 
+			users_wallet 
+		GROUP BY 
+			currency;
+				
+	
+	</select>
+	
+	
+	
+</mapper>
